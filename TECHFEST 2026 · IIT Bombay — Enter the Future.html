@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>TECHFEST 2026 · IIT Bombay — Enter the Future</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#02040a;--fg:#fff;--b:#2f7bff;--c:#4de8ff;--v:#8a6bff;box-sizing:border-box}
+*{box-sizing:border-box;margin:0}
+html{background:var(--bg)}
+body{background:transparent;color:var(--fg);font-family:'Space Grotesk',system-ui,sans-serif;cursor:none;overflow-x:hidden}
+canvas#c{position:fixed;inset:0;width:100%;height:100%;z-index:-1}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--c)}
+h1,h2,.num{font-family:'Orbitron','Space Grotesk',sans-serif;font-weight:900;line-height:.95;letter-spacing:.02em}
+section{min-height:100vh;display:flex;align-items:center;padding:0 7vw;position:relative}
+section.tl{min-height:300vh;align-items:flex-start}
+.c{max-width:720px}.r{margin-left:auto;text-align:right}.mid{margin:auto;text-align:center;max-width:1000px}
+h1{font-size:clamp(44px,9vw,140px);background:linear-gradient(180deg,#fff 30%,#7fb2ff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(47,123,255,.45))}
+h2{font-size:clamp(30px,5.6vw,84px);text-shadow:0 0 40px rgba(77,232,255,.35)}
+h2 .ch{display:inline-block;opacity:0;transform:translateZ(-300px) translateY(60px) rotateX(70deg);transition:all .9s cubic-bezier(.16,1,.3,1);transition-delay:calc(var(--i)*28ms)}
+.in h2 .ch{opacity:1;transform:none}
+p{color:#b6c4de;font-weight:300;font-size:clamp(15px,1.5vw,20px);line-height:1.6;margin-top:22px}
+.rv{opacity:0;transform:translateY(30px);transition:all 1s .3s cubic-bezier(.16,1,.3,1)}.in .rv{opacity:1;transform:none}
+.hud{display:inline-flex;gap:10px;align-items:center;border:1px solid rgba(77,232,255,.3);padding:8px 14px;background:rgba(10,20,40,.4);backdrop-filter:blur(8px);margin-bottom:26px}
+.hud i{width:6px;height:6px;background:var(--c);box-shadow:0 0 10px var(--c);border-radius:50%;animation:p 1.4s infinite}
+@keyframes p{50%{opacity:.2}}
+.btns{display:flex;gap:16px;flex-wrap:wrap;margin-top:36px}.mid .btns,.r .btns{justify-content:inherit}
+.btn{position:relative;display:inline-block;padding:16px 30px;font:500 12px 'JetBrains Mono',monospace;letter-spacing:.2em;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);background:rgba(20,40,90,.25);backdrop-filter:blur(6px);transition:background .3s,box-shadow .3s,border-color .3s;will-change:transform}
+.btn.p{background:linear-gradient(90deg,var(--b),#1b4fd1);border-color:var(--b);box-shadow:0 0 30px rgba(47,123,255,.5)}
+.btn:hover{border-color:var(--c);box-shadow:0 0 36px rgba(77,232,255,.45)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:40;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.75)),repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px)}
+.th{margin-top:34px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.th span{border:1px solid rgba(77,232,255,.3);padding:6px 12px;font:11px "JetBrains Mono",monospace;letter-spacing:.12em;color:#9fd8ff;background:rgba(10,20,40,.4)}.th span:last-child{background:var(--b);color:#fff;border-color:var(--b)}
+#cur{position:fixed;left:0;top:0;width:34px;height:34px;margin:-17px;border:1px solid var(--c);border-radius:50%;pointer-events:none;z-index:99;transition:width .25s,height .25s,margin .25s,background .25s;mix-blend-mode:screen}
+#cur.h{width:64px;height:64px;margin:-32px;background:rgba(77,232,255,.12)}
+#dot{position:fixed;left:0;top:0;width:5px;height:5px;margin:-2.5px;background:#fff;border-radius:50%;pointer-events:none;z-index:99}
+nav{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:calc(22px + env(safe-area-inset-top,0px)) 5vw 0;z-index:50;pointer-events:none}
+nav a{pointer-events:auto;color:#fff;text-decoration:none}
+nav b{font-family:'Orbitron',sans-serif;letter-spacing:.3em}
+#prog{position:fixed;left:0;top:0;height:2px;background:linear-gradient(90deg,var(--b),var(--c));z-index:60;width:0;box-shadow:0 0 12px var(--c)}
+#scene{position:fixed;right:5vw;bottom:calc(28px + env(safe-area-inset-bottom,0px));z-index:50;text-align:right}
+.tag{position:fixed;left:0;top:0;pointer-events:none;z-index:20;transition:opacity .4s;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.15em;color:#dff6ff}
+.tag span{display:block;color:var(--c);font-size:10px;opacity:.8}
+.tag.ev{text-transform:uppercase}
+.tag.tn{max-width:240px;white-space:normal;border-left:1px solid var(--c);padding-left:14px;background:linear-gradient(90deg,rgba(10,30,70,.5),transparent)}
+.tag.tn b{display:block;font:700 22px 'Orbitron';letter-spacing:.04em;margin:4px 0;color:#fff}
+#tip{position:fixed;z-index:70;pointer-events:none;padding:12px 16px;border:1px solid var(--c);background:rgba(4,12,30,.75);backdrop-filter:blur(10px);opacity:0;transition:opacity .2s;max-width:230px;font-size:13px;color:#cfe}
+#panel{position:fixed;right:5vw;top:50%;transform:translate(40px,-50%);width:min(380px,88vw);padding:30px;z-index:60;border:1px solid rgba(77,232,255,.4);background:rgba(4,12,30,.62);backdrop-filter:blur(16px);opacity:0;pointer-events:none;transition:all .6s cubic-bezier(.16,1,.3,1);clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,22px 100%,0 calc(100% - 22px))}
+#panel.on{opacity:1;transform:translate(0,-50%);pointer-events:auto}
+#panel h3{font:900 28px 'Orbitron';margin:10px 0}
+#panel dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin-top:18px;font-size:13px}#panel dt{color:var(--c)}
+#x{position:absolute;right:16px;top:12px;background:none;border:0;color:#fff;font-size:22px;cursor:none}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4vw;width:100%;perspective:900px}
+.st{transform-style:preserve-3d;transition:transform .15s}
+.num{font-size:clamp(56px,9vw,140px);color:#eaf4ff;text-shadow:0 1px 0 #3a7bff,0 3px 0 #2658c4,0 6px 0 #17388a,0 10px 0 #0b1e4d,0 0 60px rgba(77,232,255,.6)}
+.hint{position:absolute;bottom:calc(30px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);text-align:center}
+.hint u{display:block;margin:10px auto 0;width:20px;height:34px;border:1px solid var(--c);border-radius:12px;position:relative}
+.hint u:after{content:"";position:absolute;left:50%;top:6px;width:2px;height:7px;margin-left:-1px;background:var(--c);animation:d 1.6s infinite}
+@keyframes d{to{transform:translateY(14px);opacity:0}}
+#load{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity 1.4s,visibility 1.4s}
+#load.go{opacity:0;visibility:hidden}
+#load div{width:220px;height:1px;background:#123;position:relative;overflow:hidden}#load div:after{content:"";position:absolute;inset:0;background:var(--c);animation:ld 1.6s forwards}
+@keyframes ld{from{transform:translateX(-100%)}to{transform:none}}
+@media(hover:none){body,#x{cursor:auto}#cur,#dot{display:none}.r{text-align:left;margin-left:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<canvas id="c"></canvas><div id="prog"></div><div id="cur"></div><div id="dot"></div>
+<div id="load"><div class="mono">Initializing</div><div></div></div>
+<nav><b>TECHFEST · IIT BOMBAY</b><a class="mono" href="https://techfest.org" target="_blank" rel="noopener">Register ↗</a></nav>
+<div id="scene" class="mono">SCENE 00 / HUB</div>
+<div id="tip"></div>
+<div id="panel"><button id="x" aria-label="Close">×</button><div class="mono" id="pc"></div><h3 id="pn"></h3><p id="pd" style="margin:0"></p><dl><dt>DATE</dt><dd id="pt"></dd><dt>PRIZE</dt><dd id="pp"></dd></dl><div class="btns"><a class="btn p" href="https://techfest.org" target="_blank" rel="noopener">REGISTER</a></div></div>
+
+<section data-s="HUB"><div class="c"><div class="hud mono"><i></i>TECHFEST 2026 // 30TH EDITION // IIT BOMBAY</div><h1>ENTER THE<br>FUTURE</h1><p class="rv">Where technology becomes experience.<br><span class="mono">Welcome to An Aetherial Renaissance</span></p><div class="btns rv"><a class="btn p mag" href="#events">EXPLORE TECHFEST</a><a class="btn mag" href="https://techfest.org" target="_blank" rel="noopener">REGISTER NOW</a></div></div><div class="hint mono">Scroll to descend<u></u></div></section>
+<section data-s="01 IGNITION"><div class="c r"><div class="mono">Scene 01 — Ignition</div><h2>THE CORE<br>AWAKENS</h2><p class="rv">Energy surges through the structure. Every ring, every node — alive.</p></div></section>
+<section data-s="02 INNOVATION"><div class="c"><div class="mono">Scene 02 — Innovation</div><h2>IDEAS START HERE</h2><p class="rv">Drag through the tunnel. Click a face of the Data Core to jump straight to that world.</p></div></section>
+<section data-s="03 BUILD"><div class="c r"><div class="mono">Scene 03 — Build</div><h2>BUILD WHAT'S NEXT</h2><p class="rv">Components find each other. Prototypes become products.</p></div></section>
+<section data-s="04 COMPETE"><div class="c"><div class="mono">Scene 04 — Compete</div><h2>CHALLENGE YOUR LIMITS</h2><p class="rv">The arena is live. Clocks are running. Only the sharpest ship.</p></div></section>
+<section data-s="05 CONNECT"><div class="mid"><div class="mono">Scene 05 — Connect</div><h2>MEET THE PEOPLE SHAPING TOMORROW</h2></div></section>
+<section data-s="06 FUTURE"><div class="mid"><div class="mono">Scene 06 — Future</div><h2>THE FUTURE IS WAITING.</h2></div></section>
+<section id="events" data-s="EVENT GALAXY"><div class="c" style="align-self:flex-start;padding-top:16vh"><div class="mono">Event galaxy</div><h2>CHOOSE YOUR ORBIT</h2><p class="rv">Select any world to fly toward it. Dates: Techfest 2026 is expected in December — confirm on techfest.org.</p></div></section>
+<section class="tl" data-s="TIMELINE"><div class="c" style="position:sticky;top:18vh"><div class="mono">Timeline</div><h2>THE PATH<br>FORWARD</h2><p class="rv">From a 1998 student initiative to Asia’s largest college festival.</p></div></section>
+<section data-s="ABOUT"><div class="mid"><div class="mono">About Techfest</div><h2 style="font-size:clamp(34px,8vw,120px)">MORE THAN AN EVENT.<br>A MOVEMENT.</h2><p class="rv">Techfest is the annual science and technology festival of IIT Bombay — Asia’s largest college festival, run entirely by students as a non-profit under the patronage of UNESCO and UNICEF. Competitions, Robowars, exhibitions, lectures, workshops and esports, all in one living ecosystem.</p><div class="th rv"><span>A TIMELESS LAPSE</span><span>DA VINCIAN SPECTACLE</span><span>THE SUBMERGED SOJOURN</span><span>THE MYSTICAL REALM</span><span>AN AETHERIAL RENAISSANCE</span></div></div></section>
+<section data-s="IMPACT"><div class="stats"><div class="st"><div class="num" data-n="180" data-x="K+">0</div><div class="mono">Footfall</div></div><div class="st"><div class="num" data-n="2500" data-x="+">0</div><div class="mono">Indian colleges</div></div><div class="st"><div class="num" data-n="500" data-x="+">0</div><div class="mono">International universities</div></div><div class="st"><div class="num" data-n="28" data-x="+">0</div><div class="mono">Years of innovation</div></div></div></section>
+<section id="reg" data-s="ENTER"><div class="mid"><h2 style="font-size:clamp(34px,8vw,120px)">READY TO ENTER<br>THE FUTURE?</h2><div class="btns rv" style="justify-content:center"><a class="btn p mag" href="https://techfest.org" target="_blank" rel="noopener">REGISTER NOW</a><a class="btn mag" href="#events">EXPLORE EVENTS</a></div></div><div class="hint mono">Scroll ↑ to revisit<u></u></div></section>
+<div id="labels"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const mob=matchMedia('(hover:none)').matches,STR=30;
+// split headings
+$$('h2').forEach(h=>{let i=0;const w=n=>{[...n.childNodes].forEach(k=>{if(k.nodeType===3){const f=document.createDocumentFragment();[...k.textContent].forEach(ch=>{const s=document.createElement('span');s.className='ch';s.style.setProperty('--i',i++);s.textContent=ch===' '?'\u00a0':ch;f.appendChild(s)});k.replaceWith(f)}else if(k.nodeName!=='BR')w(k)})};w(h)});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll('.num').forEach(count)}}),{threshold:.35});
+$$('section').forEach(s=>io.observe(s));
+function count(el){if(el.d)return;el.d=1;const n=+el.dataset.n,t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/1800),e=1-Math.pow(1-k,4);el.textContent=Math.round(n*e)+(k>=1?el.dataset.x:'');k<1&&requestAnimationFrame(f)})(t0)}
+
+// three
+const R=new THREE.WebGLRenderer({canvas:$('#c'),antialias:true,powerPreference:'high-performance'});
+R.setPixelRatio(Math.min(devicePixelRatio,1.75));R.setClearColor(0x02040a);
+const S=new THREE.Scene();S.fog=new THREE.FogExp2(0x02040a,.011);
+const cam=new THREE.PerspectiveCamera(60,1,.1,600);
+const BL=0x2f7bff,CY=0x4de8ff,VI=0x8a6bff;
+const add=c=>new THREE.MeshBasicMaterial({color:c,wireframe:true,transparent:true,opacity:.5,blending:THREE.AdditiveBlending,depthWrite:false});
+const lineM=(c,o=.8)=>new THREE.LineBasicMaterial({color:c,transparent:true,opacity:o,blending:THREE.AdditiveBlending});
+function glowTex(){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d'),g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(77,232,255,.5)');g.addColorStop(1,'rgba(47,123,255,0)');x.fillStyle=g;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(c)}
+const GT=glowTex();
+const glow=(col,s)=>{const m=new THREE.Sprite(new THREE.SpriteMaterial({map:GT,color:col,blending:THREE.AdditiveBlending,transparent:true,depthWrite:false}));m.scale.setScalar(s);return m};
+S.add(new THREE.AmbientLight(0x4466aa,.6));
+const ml=new THREE.PointLight(CY,2.2,60);S.add(ml);
+
+const WM=[];
+function fres(c,p=2.5){return new THREE.ShaderMaterial({uniforms:{c:{value:new THREE.Color(c)},p:{value:p}},vertexShader:'varying vec3 n,v;void main(){n=normalize(normalMatrix*normal);vec4 m=modelViewMatrix*vec4(position,1.);v=normalize(-m.xyz);gl_Position=projectionMatrix*m;}',fragmentShader:'uniform vec3 c;uniform float p;varying vec3 n,v;void main(){float f=pow(1.-abs(dot(n,v)),p);gl_FragColor=vec4(c*f*1.8,f);}',transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide})}
+function wordmark(){const c=document.createElement('canvas');c.width=1024;c.height=300;const t=new THREE.CanvasTexture(c);const d=()=>{const x=c.getContext('2d');x.clearRect(0,0,1024,300);const g=x.createLinearGradient(0,40,0,170);g.addColorStop(0,'#fff');g.addColorStop(1,'#6fa8ff');x.fillStyle=g;x.textAlign='center';x.font='900 150px Orbitron,Space Grotesk,sans-serif';x.shadowColor='#2f7bff';x.shadowBlur=40;x.fillText('TECHFEST',512,160);x.shadowBlur=0;x.fillStyle='#4de8ff';x.font='400 34px JetBrains Mono,monospace';x.fillText('I I T   B O M B A Y   ·   2 0 2 6',512,235);t.needsUpdate=true};d();WM.push(d);const m=new THREE.Mesh(new THREE.PlaneGeometry(15,4.4),new THREE.MeshBasicMaterial({map:t,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));m.position.set(0,-7.4,-6);return m}
+document.fonts.load('900 20px Orbitron').then(()=>WM.forEach(f=>f()));
+function emblem(k=1,w=false){const g=new THREE.Group(),sp=[];
+ const dark=new THREE.MeshStandardMaterial({color:0x0a1226,metalness:.9,roughness:.25,emissive:0x0a2a6a,emissiveIntensity:.6});
+ [[3.2,.8,.8,0,1.4],[.8,3.4,.8,0,-.4]].forEach(([w,h,d,x,y])=>{const b=new THREE.BoxGeometry(w,h,d);const m=new THREE.Mesh(b,dark);m.position.set(x,y,0);const e=new THREE.LineSegments(new THREE.EdgesGeometry(b),lineM(CY,1));m.add(e);g.add(m)});
+ const ico=new THREE.Mesh(new THREE.IcosahedronGeometry(4.2,1),add(BL));g.add(ico);sp.push([ico,.1,.15]);
+ const oct=new THREE.Mesh(new THREE.OctahedronGeometry(2.6),add(VI));g.add(oct);sp.push([oct,-.2,.1]);
+ [[5.6,0],[6.4,1]].forEach(([r,i])=>{const t=new THREE.Mesh(new THREE.TorusGeometry(r,.02,8,120),new THREE.MeshBasicMaterial({color:i?VI:CY,transparent:true,opacity:.8,blending:THREE.AdditiveBlending}));t.rotation.x=1.2*i+.4;g.add(t);sp.push([t,.2*(i?-1:1),.3])});
+ g.add(new THREE.Mesh(new THREE.SphereGeometry(3.9,48,48),fres(BL,2.2)));g.add(new THREE.Mesh(new THREE.SphereGeometry(4.7,48,48),fres(CY,4)));
+ const sh=[];for(let i=0;i<500;i++){const u=Math.random()*6.283,v=Math.acos(2*Math.random()-1),r=7+Math.random()*1.5;sh.push(r*Math.sin(v)*Math.cos(u),r*Math.cos(v),r*Math.sin(v)*Math.sin(u))}
+ const PM=(s,c)=>new THREE.PointsMaterial({size:s,color:c,transparent:true,opacity:.85,blending:THREE.AdditiveBlending,depthWrite:false});
+ const shp=new THREE.Points(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(sh,3)),PM(.12,CY));g.add(shp);sp.push([shp,.2,.05]);
+ const tk=[];for(let i=0;i<180;i++){const a=i/180*6.283;tk.push(Math.cos(a)*7.6,0,Math.sin(a)*7.6)}
+ const tkp=new THREE.Points(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(tk,3)),PM(.2,0xffffff));tkp.rotation.x=.5;g.add(tkp);sp.push([tkp,-.3,0]);
+ if(w)g.add(wordmark());
+ if(window.LOGO_DATA){const im=new Image();im.onload=()=>{const tx=new THREE.Texture(im);tx.needsUpdate=true;const q=new THREE.Mesh(new THREE.PlaneGeometry(6*im.width/im.height,6),new THREE.MeshBasicMaterial({map:tx,transparent:true}));q.position.z=1.2;g.add(q)};im.src=window.LOGO_DATA}
+ g.add(glow(BL,16));g.userData={sp};g.scale.setScalar(k);return g}
+const anim=[];
+function addEmblem(z,k=1,w=false){const e=emblem(k,w);e.position.z=z;S.add(e);anim.push(e);return e}
+const hub=addEmblem(0,1.1,true);hub.position.x=5;
+// satellites
+const sats=[],sd=[['Technoholix','The night segment: headline performances and shows.'],['International Robowars','Combat robots in a bulletproof arena.'],['Ozone','International street artists and open-air spectacle.'],['Lectures','Talks by scientists, leaders and innovators.']];
+sd.forEach((d,i)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(.35,16,16),new THREE.MeshBasicMaterial({color:i%2?VI:CY}));m.add(glow(CY,2.6));m.userData={tip:d,i};S.add(m);sats.push(m)});
+// orb
+const orb=new THREE.Mesh(new THREE.SphereGeometry(.45,24,24),new THREE.MeshBasicMaterial({color:0xcfeaff}));orb.add(glow(CY,4));orb.userData={tip:['Tech Orb','Follows your cursor. Hover to charge it.']};S.add(orb);
+// tunnel
+const tun=[];for(let z=-20;z>-160;z-=5){const l=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(14,14,.1)),lineM(z%10?BL:CY,.55));l.position.z=z;l.userData.r=(z/5)*.12;S.add(l);tun.push(l)}
+const grid=new THREE.GridHelper(900,150,0x1a3a8a,0x0c1a3a);grid.position.set(0,-8,-200);grid.material.transparent=true;grid.material.opacity=.5;S.add(grid);
+// data core cube (section 2)
+const labs=['COMPETITIONS','WORKSHOPS','ROBOWARS','LECTURES','EXHIBITIONS','ESPORTS'];
+const faceMats=labs.map((t,i)=>{const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');x.fillStyle='#071228';x.fillRect(0,0,256,256);x.strokeStyle='#4de8ff';x.lineWidth=6;x.strokeRect(10,10,236,236);x.fillStyle='#fff';x.font='700 26px Orbitron,sans-serif';x.textAlign='center';x.fillText(t,128,136);return new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true,opacity:.92})});
+const cube=new THREE.Mesh(new THREE.BoxGeometry(4,4,4),faceMats);cube.position.set(5,0,-2*STR);cube.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(4.2,4.2,4.2)),lineM(CY)));cube.add(glow(BL,14));S.add(cube);
+// build scene
+const parts=[];for(let i=0;i<30;i++){const m=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshStandardMaterial({color:0x0c1a3a,emissive:i%3?0x113a9a:0x2a1a7a,metalness:.8,roughness:.3}));m.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),lineM(CY,.9)));const gx=i%6-2.5,gy=Math.floor(i/6)-2;m.userData={t:new THREE.Vector3(gx*1.4-5,gy*1.4,0),s:new THREE.Vector3((Math.random()-.5)*30,(Math.random()-.5)*20,(Math.random()-.5)*20),r:Math.random()*6};S.add(m);parts.push(m)}
+const bz=-3*STR;
+// compete
+const arena=new THREE.Group();arena.position.set(4,0,-4*STR);for(let i=0;i<6;i++){const t=new THREE.Mesh(new THREE.TorusGeometry(2+i*.9,.04,8,6+i*2),new THREE.MeshBasicMaterial({color:i%2?VI:0xffffff,transparent:true,opacity:.7,blending:THREE.AdditiveBlending}));t.userData.s=(i%2?-1:1)*(.3+i*.15);arena.add(t)}arena.add(glow(VI,12));S.add(arena);
+// connect
+const nodes=[],cz=-5*STR;for(let i=0;i<36;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(.18,10,10),new THREE.MeshBasicMaterial({color:i%4?CY:VI}));m.userData={b:new THREE.Vector3((Math.random()-.5)*20,(Math.random()-.5)*12,(Math.random()-.5)*14),p:Math.random()*9};S.add(m);nodes.push(m)}
+const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(36*36*6),3));const links=new THREE.LineSegments(lg,lineM(CY,.35));links.frustumCulled=false;S.add(links);
+// future
+const fut=addEmblem(-6*STR,2.2);
+// stars
+const N=1500,pg=new THREE.BufferGeometry(),pa=new Float32Array(N*3);for(let i=0;i<N;i++){pa[i*3]=(Math.random()-.5)*90;pa[i*3+1]=(Math.random()-.5)*60;pa[i*3+2]=20-Math.random()*400}
+pg.setAttribute('position',new THREE.BufferAttribute(pa,3));
+const pts=new THREE.Points(pg,new THREE.PointsMaterial({size:.14,color:0x9fd2ff,transparent:true,opacity:.8,blending:THREE.AdditiveBlending,depthWrite:false}));S.add(pts);
+// events galaxy
+const EZ=-7*STR-4,evs=[['International Robowars','ROBOWARS','Dec 2026 · TBA','See techfest.org','Flagship event: teams build combat robots to fight in a bulletproof arena.',0],['International Full Throttle','FULL THROTTLE','Dec 2026 · TBA','See techfest.org','Flagship international competition featured in past editions.',1],['Aeromodelling Challenge','AERO','Dec 2026 · TBA','See techfest.org','International aeromodelling challenge, held with Boeing in 2022.',2],['Drone Racing','DRONES','Dec 2026 · TBA','₹1 lakh (2022)','Raced at the Gymkhana grounds; 2022 winners shared prizes worth ₹1 lakh.',3],['AI, ML & Fintech','AI / ML','Dec 2026 · TBA','See techfest.org','International competitions in AI, machine learning and fintech.',4],['Hackathons','HACK','Dec 2026 · TBA','See techfest.org','Hackathons open to teams from colleges across the country.',5],['Workshops','WORKSHOPS','Dec 2026 · TBA','Certificates','Hands-on workshops in AI, deep learning, robotics and coding.',6],['Lectures & Exhibitions','LECTURES','Dec 2026 · TBA','Open to all','Guest lectures, keynotes and international tech exhibitions.',7]];
+const G=[new THREE.IcosahedronGeometry(1,0),new THREE.OctahedronGeometry(1.1),new THREE.TorusKnotGeometry(.7,.22,60,8),new THREE.BoxGeometry(1.4,1.4,1.4),new THREE.DodecahedronGeometry(1),new THREE.TetrahedronGeometry(1.2),new THREE.CylinderGeometry(.9,.9,.4,6),new THREE.TorusGeometry(.8,.25,8,16)];
+const evM=[],ec=new THREE.Vector3(0,0,EZ);S.add(new THREE.Mesh(new THREE.IcosahedronGeometry(1.6,2),add(CY)).translateZ(EZ).translateY(0));
+evs.forEach((e,i)=>{const a=i/8*Math.PI*2,m=new THREE.Mesh(G[i],new THREE.MeshStandardMaterial({color:0x0b1a3c,emissive:i%2?0x3a2a9a:0x1146c8,metalness:.8,roughness:.25}));m.add(new THREE.LineSegments(new THREE.EdgesGeometry(G[i]),lineM(CY)));m.add(glow(i%2?VI:BL,4));m.add(new THREE.Mesh(new THREE.SphereGeometry(1.5,24,24),fres(i%2?VI:CY,2.4)));const h=new THREE.Vector3(Math.cos(a)*7,Math.sin(a*2)*2.2,EZ+Math.sin(a)*7);m.position.copy(h);m.userData={e,h,s:1,k:i};S.add(m);evM.push(m);const t=document.createElement('div');t.className='tag ev';t.innerHTML='<span>0'+(i+1)+'</span>'+e[0];$('#labels').appendChild(t);m.userData.tag=t});
+{const rp=[];for(let i=0;i<=128;i++){const a=i/128*6.283;rp.push(new THREE.Vector3(Math.cos(a)*7,0,EZ+Math.sin(a)*7))}S.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(rp),lineM(CY,.25)))}
+// timeline
+const TZ=-8*STR-30,tlD=[['1998','The Beginning','A student platform to showcase projects.'],['2015–16','1.65 lakh footfall','Record crowds across campus.'],['OCT 2018','Guinness World Record','Most LED lights lit simultaneously.'],['DEC 2022','26th Edition','Jio 5G launch & first drone light show.'],['DEC 2025','29th Edition','Dec 22–24 · global competitions.'],['2026','An Aetherial Renaissance','The 30th edition arrives.']];
+const tlx=z=>Math.sin(z*.28)*3.5;const tlN=[];
+const pathPts=[];for(let z=-8*STR+4;z>-9*STR-4;z-=.6)pathPts.push(new THREE.Vector3(tlx(z),0,z));
+S.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pathPts),lineM(CY,.9)));
+tlD.forEach((d,i)=>{const z=-8*STR-3-i*4.8,m=new THREE.Mesh(new THREE.OctahedronGeometry(.45),new THREE.MeshBasicMaterial({color:i%2?VI:CY}));m.position.set(tlx(z),0,z);m.add(glow(CY,3.5));m.userData.i=i;S.add(m);const t=document.createElement('div');t.className='tag tn';t.innerHTML='<span>'+d[0]+'</span><b>'+d[1]+'</b>'+d[2];$('#labels').appendChild(t);tlN.push([m,t])});
+// final
+const fin=addEmblem(-11*STR-8,1.6);
+
+for(let i=0;i<40;i++){const g=glow(i%3?BL:VI,45+Math.random()*60);g.material.opacity=.16+Math.random()*.12;g.position.set((Math.random()<.5?-1:1)*(18+Math.random()*30),(Math.random()-.5)*40,20-Math.random()*400);S.add(g)}
+[[-14,8,-6,.5],[16,6,-12,-.45],[-6,12,-60,.3],[10,10,-130,-.3],[0,12,-215,.2]].forEach(([x,y,z,r])=>{const b=new THREE.Mesh(new THREE.CylinderGeometry(.1,3,34,24,1,true),new THREE.MeshBasicMaterial({color:r>0?BL:VI,transparent:true,opacity:.07,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));b.position.set(x,y,z);b.rotation.z=r;S.add(b)});
+const PN=60,pn=new Float32Array(PN*3),pv=[];for(let i=0;i<PN;i++){const a=Math.random()*6.283;pn[i*3]=Math.cos(a)*6.6;pn[i*3+1]=Math.sin(a)*6.6;pn[i*3+2]=-20-Math.random()*140;pv.push(.15+Math.random()*.5)}
+const pg2=new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(pn,3));const pulses=new THREE.Points(pg2,new THREE.PointsMaterial({size:.5,map:GT,color:0xffffff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));S.add(pulses);
+// input
+const ms={x:0,y:0,tx:0,ty:0},ray=new THREE.Raycaster(),mv=new THREE.Vector2();let boost=0,hov=null,sel=null,hoverOrb=0;
+addEventListener('pointermove',e=>{ms.tx=e.clientX/innerWidth*2-1;ms.ty=-(e.clientY/innerHeight*2-1);cx=e.clientX;cy=e.clientY;$('#dot').style.transform=`translate(${cx}px,${cy}px)`;});
+let cx=0,cy=0,rx=0,ry=0;
+const cur=$('#cur');
+$$('a,button,.mag').forEach(a=>{a.addEventListener('mouseenter',()=>cur.classList.add('h'));a.addEventListener('mouseleave',()=>{cur.classList.remove('h');a.style.transform=''});});
+$$('.mag').forEach(b=>b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.3}px,${(e.clientY-r.top-r.height/2)*.4}px)`}));
+$$('a[href^="#"]:not([href="#"])').forEach(a=>a.addEventListener('click',e=>{const t=$(a.getAttribute('href'));if(t){e.preventDefault();scrollTo({top:t.offsetTop,behavior:'smooth'})}}));
+addEventListener('pointerdown',e=>{boost=1;const q=new THREE.Vector2(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight*2-1));ray.setFromCamera(q,cam);
+ const h=ray.intersectObjects(evM,false)[0];if(h&&!e.target.closest('#panel')){pick(h.object);return}
+ const c=ray.intersectObject(cube,false)[0];if(c){const f=Math.floor(c.faceIndex/2);const tgt=[7,7,7,7,7,7][f];scrollTo({top:$('#events').offsetTop,behavior:'smooth'});}});
+function pick(m){sel=m;const e=m.userData.e;$('#pc').textContent='// '+e[1];$('#pn').textContent=e[0];$('#pd').textContent=e[4];$('#pt').textContent=e[2];$('#pp').textContent=e[3];$('#panel').classList.add('on')}
+function unpick(){sel=null;$('#panel').classList.remove('on')}
+$('#x').onclick=unpick;addEventListener('keydown',e=>e.key==='Escape'&&unpick());
+let lastY=0;
+// section map
+let tops=[];const secs=$$('section');const meas=()=>{tops=secs.map(s=>[s.offsetTop,s.offsetHeight])};
+function size(){R.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();meas()}
+addEventListener('resize',size);size();addEventListener('load',meas);
+let sy=0,intro=0;const tip=$('#tip'),V=new THREE.Vector3(),clock=new THREE.Clock();
+const ss=(a,b,x)=>{x=Math.min(1,Math.max(0,(x-a)/(b-a)));return x*x*(3-2*x)};
+function pos(y){let i=0;while(i<tops.length-1&&y>=tops[i+1][0])i++;return i+Math.min(1,(y-tops[i][0])/Math.max(1,tops[i][1]))}
+function proj(v){V.copy(v).project(cam);return[(V.x*.5+.5)*innerWidth,(-V.y*.5+.5)*innerHeight,V.z]}
+let sceneName='';
+function loop(){const t=clock.getElapsedTime(),dt=Math.min(clock.getDelta(),.05);
+ const Y=scrollY;sy+=(Y-sy)*.07;if(sel&&Math.abs(Y-lastY)>260)unpick();if(!sel)lastY=Y;
+ ms.x+=(ms.tx-ms.x)*.06;ms.y+=(ms.ty-ms.y)*.06;intro+=(1-intro)*.025;
+ const p=pos(sy);let z=12-p*STR-(1-intro)*40;
+ let px=0,py=0;if(p>8&&p<9.2){px=tlx(z)}
+ const tgt=new THREE.Vector3(),look=new THREE.Vector3();
+ if(sel){tgt.copy(sel.position).add(new THREE.Vector3(1.5,.4,4.2));look.copy(sel.position).add(new THREE.Vector3(-1.6,0,0));cam.position.lerp(tgt,.05)}
+ else{tgt.set(px+ms.x*1.4,py+ms.y*.9,z);cam.position.lerp(tgt,sel===null?.12:.05);look.set(px*.7+ms.x*2.5,py+ms.y*1.6,z-14)}
+ const cl=cam.userData.l||(cam.userData.l=look.clone());cl.lerp(look,.08);cam.lookAt(cl);
+ cam.fov=60+(1-intro)*30+Math.abs(sy-Y)*.004;cam.updateProjectionMatrix();
+ ml.position.set(cam.position.x+ms.x*8,cam.position.y+ms.y*6,cam.position.z-6);
+ boost*=.93;pts.scale.setScalar(1+boost*.08);pts.material.size=.14+boost*.3;pts.rotation.z=t*.004+ms.x*.04;pts.position.x=ms.x*-1.5;
+ // anims
+ anim.forEach(e=>{e.userData.sp.forEach(([o,a,b],i)=>{o.rotation.y+=a*.01;o.rotation.x+=b*.005});e.rotation.y=Math.sin(t*.3)*.3+ms.x*.5;e.rotation.x=ms.y*-.3;e.position.y=Math.sin(t*.6+e.position.z)*.2});
+ const ig=ss(0,1.2,p);hub.children[2].material.opacity=.3+ig*.5;
+ sats.forEach((s,i)=>{const a=t*(.5+i*.12)+i*1.6,r=7+i*.7;s.position.set(Math.cos(a)*r,Math.sin(a*1.3)*2.5,Math.sin(a)*r)});
+ tun.forEach(l=>{l.rotation.z=t*.1*l.userData.r*3+l.userData.r;l.scale.setScalar(1+Math.sin(t*2+l.position.z*.2)*.03)});
+ for(let i=0;i<PN;i++){pn[i*3+2]-=pv[i]*(1+Math.abs(sy-Y)*.01);if(pn[i*3+2]<-162)pn[i*3+2]=-18}pg2.attributes.position.needsUpdate=true;
+ cube.rotation.x=t*.3+ms.y*.4;cube.rotation.y=t*.4+ms.x*.5;
+ const ba=ss(.2,1,1-Math.min(1,Math.abs(p-3)/1.2));parts.forEach(m=>{const u=m.userData;m.position.set(bz*0+u.s.x+(u.t.x-u.s.x)*ba+4,u.s.y+(u.t.y-u.s.y)*ba,bz+u.s.z*(1-ba));m.rotation.set(u.r*(1-ba)+t*.1*(1-ba),u.r*(1-ba),0)});
+ arena.children.forEach(c=>{c.rotation.z+=c.userData.s*.01;c.rotation.x=1.1+Math.sin(t)*.08});if(arena.children[0]){arena.rotation.y=Math.sin(t*.5)*.3}
+ {const a=lg.attributes.position.array;let k=0;nodes.forEach((n,i)=>{const u=n.userData;n.position.set(u.b.x+Math.sin(t*.4+u.p)*1.2,u.b.y+Math.cos(t*.5+u.p)*1.2,cz+u.b.z);n.scale.setScalar(1+Math.sin(t*3+u.p)*.3)});for(let i=0;i<36;i++)for(let j=i+1;j<36;j++){if(nodes[i].position.distanceTo(nodes[j].position)<6.5){const A=nodes[i].position,B=nodes[j].position;a[k++]=A.x;a[k++]=A.y;a[k++]=A.z;a[k++]=B.x;a[k++]=B.y;a[k++]=B.z}}lg.setDrawRange(0,k/3);lg.attributes.position.needsUpdate=true}
+ // events
+ evM.forEach(m=>{const u=m.userData,isS=sel===m;const out=sel&&!isS;const ts=out?.35:(isS?1.8:1);u.s+=(ts-u.s)*.08;m.scale.setScalar(u.s*(hov===m&&!sel?1.25:1));
+  const a=t*.12;const hx=u.h.x,hz=u.h.z-EZ;const rx=hx*Math.cos(a)-hz*Math.sin(a),rz=hx*Math.sin(a)+hz*Math.cos(a);
+  if(!sel){u.rp=new THREE.Vector3(rx,u.h.y+Math.sin(t+u.k)*.4,EZ+rz)}
+  if(!u.rp)u.rp=u.h.clone();const goal=out?u.rp.clone().sub(ec).multiplyScalar(1.7).add(ec):u.rp;if(!isS)m.position.lerp(goal,.06);m.rotation.x+=.008;m.rotation.y+=.012;
+  const [sx,sy2,sz]=proj(m.position);const vis=sz<1&&Math.abs(p-7)<1.1&&!out;u.tag.style.opacity=vis?1:0;u.tag.style.transform=`translate(${sx+16}px,${sy2-8}px)`});
+ // timeline labels
+ tlN.forEach(([m,tg])=>{m.rotation.y=t;const[sx,sy2,sz]=proj(m.position),d=cam.position.z-m.position.z;tg.style.opacity=(d>2&&d<20&&sz<1)?Math.min(1,(20-d)/6,(d-2)/4):0;tg.style.transform=`translate(${sx+30}px,${sy2-30}px)`});
+ // orb
+ const q=new THREE.Vector3(ms.x,ms.y,.5).unproject(cam).sub(cam.position).normalize();const op=cam.position.clone().add(q.multiplyScalar(9));orb.position.lerp(op,.07);orb.scale.setScalar(orb.scale.x+((1+hoverOrb*1.2)-orb.scale.x)*.1);
+ // hover ray
+ mv.set(ms.tx,ms.ty);ray.setFromCamera(mv,cam);
+ const hs=ray.intersectObjects([...sats,orb,...evM],false)[0];hov=null;let tp=null;
+ if(hs){const o=hs.object;if(o===orb){tp=o.userData.tip;hoverOrb=1}else if(evM.includes(o)){hov=o;if(!sel)tp=[o.userData.e[0],o.userData.e[4]]}else tp=o.userData.tip;}
+ if(!hs||hs.object!==orb)hoverOrb*=.9;
+ if(tp){tip.innerHTML='<div class="mono" style="margin-bottom:6px">'+tp[0]+'</div>'+tp[1];tip.style.opacity=1;tip.style.transform=`translate(${cx+20}px,${cy+16}px)`}else tip.style.opacity=0;
+ cur.classList.toggle('h',!!hs||cur.matches('.h')&&false);
+ cur.style.transform=`translate(${rx+=(cx-rx)*.2}px,${ry+=(cy-ry)*.2}px)`;
+ // stats tilt
+ $$('.st').forEach(s=>s.style.transform=`rotateY(${ms.x*14}deg) rotateX(${-ms.y*10}deg)`);
+ // hud
+ const idx=Math.min(secs.length-1,Math.floor(p));const nm=secs[idx].dataset.s;if(nm!==sceneName){sceneName=nm;$('#scene').textContent='// '+nm}
+ $('#prog').style.width=(Y/Math.max(1,document.documentElement.scrollHeight-innerHeight)*100)+'%';
+ R.render(S,cam);requestAnimationFrame(loop)}
+loop();
+setTimeout(()=>{$('#load').classList.add('go');secs[0].classList.add('in')},1700);
+</script></body></html>
